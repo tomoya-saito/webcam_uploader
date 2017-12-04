@@ -1,4 +1,4 @@
-# Webcam recorder for Kaltura CE
+# Webcam recorder and uploader for Kaltura CE
 
 Summary
 ------

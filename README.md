@@ -3,8 +3,8 @@
 Summary
 ------
 
-This is a webcam recorder and uploader for the Kaltura Community Edition.
-This software is developed by the Media and Information Technology Center, Yamaguchi University.
+This is a webcam recorder and uploader for the Kaltura Community Edition (CE).
+This software is developed by "Tomoya Saito".
 By using this software, users can recording a video by using PC's web-camera, and can upload the video to the Kaltura server.
 
 This software use the WebRTC API, and includes the JQuery library and the Kaltura PHP 5 API Client Library.
@@ -50,6 +50,4 @@ Warning
 
 Release notes
 ------
-* Version 1.0 (Dec. 14th, 2017)
-
-Release first version.
+* Version 1.0.0 (Dec. 14th, 2017). Release first version.

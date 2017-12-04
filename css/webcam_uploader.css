@@ -1,0 +1,84 @@
+/**
+ * "Webcam Uploader" style sheet.
+ * @copyright  (C) 2017 Tomoya Saito
+ * @license    http://www.gnu.org/licenses/agpl.html GNU AGPL v3 or later
+ */
+
+#upload_btn,
+#webcam_btn,
+#uploader_open,
+#webcam_open {
+    font-size: 1.1em;
+}
+
+#progress_bar_container {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    visibility: hidden;
+    display: block;
+    padding-top: 10px;
+}
+
+#slider_border {
+    width: 100%;
+    height: 18px;
+    overflow: hidden;
+}
+
+#progress_bar {
+    float: left;
+    height: 18px;
+    width: 0%;
+    background: #0f0;
+}
+
+#loading_text {
+    position: relative;
+    top: -18px;
+    font-weight: bold;
+    left: -20px;
+}
+
+#modal_content {
+    width: 320px;
+    height: 240px;
+    font-size: 14px;
+    margin: 0;
+    padding: 10px 20px;
+    border: 2px solid #aaa;
+    background: #fff;
+    position: fixed;
+    display: none;
+    z-index: 2;
+}
+
+#modal_window {
+    z-index: 1;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+#entry_steps,
+#metadata_fields,
+#uploader_cancel,
+#fileData,
+#name,
+#tags,
+#description,
+#entry_submit,
+#entry_reset,
+#uploader_back,
+#embed_code {
+    font-size: 14px;
+}
+
+#entry_warning {
+    font-size: 14px;
+    color: red;
+}

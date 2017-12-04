@@ -20,7 +20,8 @@ Installation
 ------
 
 1. Unzip this software, and put the files in your kaltura's web server.
-2. In order to allow users to access "webcam_uploader.php", it may be required to modify the configurations of httpd (Apache etc).
+2. Modify constant values (parameters) in "webcam_uploader.php" according to your Kaltura server's environment and configurations.
+3. In order to allow users to access "webcam_uploader.php", it may be required to modify the configurations of httpd (Apache etc).
 
 How to use
 ------

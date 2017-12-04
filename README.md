@@ -1,4 +1,4 @@
-# Webcam recording and uploading softwaer (web scripts) for the Kaltura CE
+# Webcam recording and uploading software (web scripts) for the Kaltura CE
 
 Summary
 ------

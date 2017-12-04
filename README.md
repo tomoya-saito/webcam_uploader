@@ -1,9 +1,9 @@
-# Webcam recorder and uploader for Kaltura CE
+# Webcam recording and uploading scripts for Kaltura CE
 
 Summary
 ------
 
-This is a webcam recorder and uploader for the Kaltura Community Edition (CE).
+This is a webcam recording and uploading software (scripts) for the Kaltura Community Edition (CE).
 This software is developed by "Tomoya Saito".
 By using this software, users can recording a video by using PC's web-camera, and can upload the video to the Kaltura server.
 
@@ -19,7 +19,7 @@ Requirements
 Installation
 ------
 
-1. Unzip this software, and put the files in your kaltura's web server.
+1. Unzip this software, and put all files in your Kaltura's web server.
 2. Modify constant values (parameters) in "webcam_uploader.php" according to your Kaltura server's environment and configurations.
 3. In order to allow users to access "webcam_uploader.php", it may be required to modify the configurations of httpd (Apache etc).
 

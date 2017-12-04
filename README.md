@@ -3,7 +3,7 @@
 Summary
 ------
 
-This is a webcam recording and uploading software (scripts) for the Kaltura Community Edition (CE).
+This is a webcam recording and uploading software (web scripts) for the Kaltura Community Edition (CE).
 This software is developed by "Tomoya Saito".
 By using this software, users can recording a video by using PC's web-camera, and can upload the video to the Kaltura server.
 

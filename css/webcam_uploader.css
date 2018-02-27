@@ -1,5 +1,5 @@
 /**
- * "Webcam recording and uploading scripts" style sheet.
+ * "Webcam Uploader" style sheet.
  * @copyright  (C) 2017 Tomoya Saito
  * @license    http://www.gnu.org/licenses/agpl.html GNU AGPL v3 or later
  */
@@ -64,7 +64,8 @@
     background-color: rgba(0, 0, 0, 0.75);
 }
 
-#entry_steps,
+#video_exp,
+#metadata_exp,
 #metadata_fields,
 #uploader_cancel,
 #fileData,

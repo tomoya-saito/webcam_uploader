@@ -1066,13 +1066,16 @@ class KalturaClientBase
 
 	protected static function aesEncrypt($key, $message)
 	{
-		return mcrypt_encrypt(
-			MCRYPT_RIJNDAEL_128,
-			substr(sha1($key, true), 0, 16),
-			$message,
-			MCRYPT_MODE_CBC,
-			str_repeat("\0", 16)	// no need for an IV since we add a random string to the message anyway
-		);
+               /**
+		* return mcrypt_encrypt(
+		* 	MCRYPT_RIJNDAEL_128,
+		* 	substr(sha1($key, true), 0, 16),
+		* 	$message,
+		* 	MCRYPT_MODE_CBC,
+		* 	str_repeat("\0", 16)	// no need for an IV since we add a random string to the message anyway
+		* );
+                */
+                return openssl_encrypt($message, "AES-256-CBC", substr(sha1($key, true), 0, 16), 0, str_repeat("\0", 16));
 	}
 
 	private function hash ( $salt , $str )

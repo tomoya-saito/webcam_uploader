@@ -84,6 +84,140 @@ var UPLOAD_TOKEN_STATUS = {
 };
 
 /**
+ * This function retrieve whether web browser is the Internet Explorer.
+ * @access public
+ * @return {bool} - true if web browser is the IE, otherwise false.
+ */
+function isIE() {
+    var ua = navigator.userAgent.toLowerCase();
+    var ver = navigator.appVersion.toLowerCase();
+
+    // Case of IE(not 11).
+    var isMsIE = (ua.indexOf('msie') > -1) && (ua.indexOf('opera') == -1);
+    // Case of IE6.
+    var isIE6 = isMsIE && (ver.indexOf('msie 6.') > -1);
+    // Case of IE7.
+    var isIE7 = isMsIE && (ver.indexOf('msie 7.') > -1);
+    // Case of IE8.
+    var isIE8 = isMsIE && (ver.indexOf('msie 8.') > -1);
+    // Case of IE9.
+    var isIE9 = isMsIE && (ver.indexOf('msie 9.') > -1);
+    // Case of IE10.
+    var isIE10 = isMsIE && (ver.indexOf('msie 10.') > -1);
+    // Case of IE11.
+    var isIE11 = (ua.indexOf('trident/7') > -1);
+
+    return isMsIE || isIE6 || isIE7 || isIE8 || isIE9 || isIE10 || isIE11;
+}
+
+/**
+ * This function retrieve whether we browser is the Edge.
+ * @access public
+ * @return {bool} - true if web browser is the Edge, otherwise false.
+ */
+function isEdge() {
+    var ua = navigator.userAgent.toLowerCase();
+
+    // Case of Edge.
+    var isMsEdge = (ua.indexOf('edge') > -1);
+    // Case of Google Chrome.
+    var isChrome = (ua.indexOf('chrome') > -1) && (ua.indexOf('edge') == -1);
+    // Case of Moziila Firefox.
+    var isFirefox = (ua.indexOf('firefox') > -1);
+    // Case of Safari.
+    var isSafari = (ua.indexOf('safari') > -1) && (ua.indexOf('chrome') == -1);
+    // Case of Opera.
+    var isOpera = (ua.indexOf('opera') > -1);
+
+    return isMsEdge === true && isChrome === false && isFirefox === false && isSafari === false && isOpera === false;
+}
+
+/**
+ * This function retrieve whether web browser is unsupported.
+ * @access public
+ * @return {bool} - true if web browser is unsupported, otherwise false.
+ */
+function checkUnsupportedBrowser() {
+    if (isIE() || isEdge()) {
+        var browser = "";
+        if (isIE()) {
+            browser = "Internet Explorer";
+        } else {
+            browser = "Edge";
+        }
+
+        printInitialErrorMessage("Sorry!!<br>This uploader does not support your browser.<br>Please use other browser.");
+        return true;
+    }
+    return false;
+}
+
+/**
+  * This function retrieve os type.
+  * @return {string} - os type.
+  */
+function getOperatingSystem() {
+    var os;
+    var ua = navigator.userAgent;
+
+    if (ua.match(/iPhone|iPad|iPod/)) {
+        os = "iOS";
+    } else if (ua.match(/Android|android/)) {
+        os = "Android";
+    } else if (ua.match(/Linux|linux/)) {
+        os = "Linux";
+    } else if (ua.match(/Win(dows)/)) {
+        os = "Windows";
+    } else if (ua.match(/Mac|PPC/)) {
+        os = "Mac OS";
+    } else if (ua.match(/CrOS/)) {
+        os = "Chrome OS";
+    } else {
+        os = "Other";
+    }
+
+    return os;
+}
+
+/**
+ * This function retrieve whether os is unsupported.
+ * @access public
+ * @return {bool} - true if os is unsupported, otherwise false.
+ */
+function checkUnsupportedOS() {
+    var os = getOperatingSystem();
+
+    if (os == "iOS" || os == "Android") {
+        printInitialErrorMessage("Sorry!!<br>This uploader does not support your OS (" + os + ").<br>For iOS and Android, you can take a video/picture and can upload it through a file uploader." );
+        return true;
+    }
+    return false;
+}
+
+/**
+ * This function checks scheme of URL.
+ * @return {bool} - If scheme is https, returns true. Otherwise, returns false.
+ */
+function isHttps() {
+    var str = window.location.protocol;
+    if (str.indexOf('https') != -1) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * This function print initial error message.
+ * @access public
+ * @param {string} errorMessage - error message.
+ */
+function printInitialErrorMessage(errorMessage) {
+    var str = "";
+    str = "<p><font color=\"red\">" + errorMessage + "</font></p>";
+    $("#uploader_content").html(str);
+}
+
+/**
 
  * @access public
  * @param {string} url - url of media.
@@ -134,10 +268,15 @@ function startRecording() {
 function stopRecording() {
     recorder.ondataavailable = function(evt) {
         videoBlob = new Blob([evt.data], {type: evt.data.type});
-        blobUrl = createObjectURL(videoBlob);
+        if (window.URL && window.URL.createObjectURL) {
+            blobUrl = window.URL.createObjectURL(videoBlob);
+        } else {
+            blobUrl = window.webkitURL.createObjectURL(videoBlob);
+        }
         setPlayingPlayer(blobUrl);
         fileSize = videoBlob.size;
         var sizeStr = "";
+        var dividedSize = 0;
 
         if (fileSize > 1024 * 1024 * 1024) { // When file size exceeds 1GB.
             fileSize = fileSize / (1024 * 1024 * 1024);
@@ -165,6 +304,18 @@ function stopRecording() {
 
         videoFilename = $("#filename").val() + "." + getFileExtension(videoBlob.type);
     };
+
+
+    if (localStream.getTracks !== undefined && localStream.getTracks !== null) {
+        var tracks = localStream.getTracks();
+        for (var i = tracks.length - 1; i >= 0; --i) {
+            tracks[i].stop();
+        }
+        if (document.getElementById("webcam").srcObject !== undefined) {
+            document.getElementById("webcam").srcObject = null;
+        }
+    }
+
     recorder.stop();
 
     $("#leftspan").css("display", "none");
@@ -180,47 +331,68 @@ function stopRecording() {
  * @access public
  */
 function removeVideo() {
+
+    if (!isHttps()) {
+        printInitialErrorMessage("Sorry!!<br>This uloader works with HTTPS protocol, and does not works with other protocols.<br>Please use HTTPS for your web site.");
+        return;
+    }
+
+    // Print error message and return true if web browser is unsupported.
+    if (checkUnsupportedBrowser() || checkUnsupportedOS()) {
+        return;
+    }
+
     var str = "";
 
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-    try {
-        if (navigator.getUserMedia === null || navigator.getUserMedia === undefined ||
-            MediaRecorder === null || MediaRecorder === undefined) {
-            str = "<font color=\"red\">This uploader requires the WebRTC.<br>";
-            str = str + "Howerver, your web browser don't support the WebRTC.</font>";
-            $("#message").html(str);
-            return;
+    navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+        getUserMedia: function(c) {
+            return new Promise(function(y, n) {
+                (navigator.mozGetUserMedia || navigator.webkitGetUserMedia).call(navigator, c, y, n);
+            });
         }
-    } catch(err) {
-        str = "<font color=\"red\">This uploader requires the WebRTC.<br>";
-        str = str + "Howerver, your web browser don't support the WebRTC.</font>";
-        $("#message").html(str);
-        return;
-    }
+    } : null);
 
     try {
+        if (navigator.mediaDevices === null || navigator.mediaDevices === undefined ||
+            MediaRecorder === null || MediaRecorder === undefined) {
+            printInitialErrorMessage("This uploader requires the WebRTC.<br>Howerver, your web browser does not support (or does not enable) the WebRTC.");
+            return;
+        }
+
         if (createObjectURL === null || createObjectURL === undefined ||
             revokeObjectURL === null || revokeObjectURL === undefined) {
-            str = "<font color=\"red\">This uploader requires the createObjectURL/revokeObjectURL.<br>";
-            str = str + "Howerver, your web browser don't support these function.</font>";
-            $("#message").html(str);
+            printInitialErrorMessage("This uploader requires the createObjectURL/revokeObjectURL.<br>Howerver, your web browser does not support these function.");
             return;
         }
     } catch(err) {
-        str = "<font color=\"red\">This uploader requires the WebRTC.<br>";
-        str = str + "Howerver, your web browser don't support the WebRTC.</font>";
-        $("#message").html(str);
+        printInitialErrorMessage("This uploader requires the WebRTC.<br>Howerver, your web browser does not support (or does not enable) the WebRTC.");
         return;
     }
 
+    setPreviewPlayer(null);
+
     if (blobUrl !== null) {
-        revokeObjectURL(blobUrl);
+        if (window.URL && window.URL.revokeObjectURL) {
+            window.URL.revokeObjectURL(blobUrl);
+        } else {
+            window.webkitURL.revokeObjectURL(blobUrl);
+        }
         blobUrl = null;
         videoBlob = null;
     }
 
-    if (localStream !== null && localStream.stop !== undefined) {
-        localStream.stop();
+    if (localStream !== null) {
+        if (localStream.getTracks !== undefined || localStream.getTracks !== null) {
+            var tracks = localStream.getTracks();
+            for (var i = tracks.length - 1; i >= 0; --i) {
+                tracks[i].stop();
+            }
+            if (document.getElementById("webcam").srcObject) {
+                document.getElementById("webcam").srcObject = null;
+            }
+        } else {
+            localStream.stop();
+        }
     }
 
     fileSize = 0;
@@ -233,20 +405,26 @@ function removeVideo() {
 
     var mimeOption = "";
 
+    var WebcamRecorder = MediaSource || MediaRecorder;
+
     // Prefer camera resolution nearest to 1280x720.
-    if (MediaRecorder.isTypeSupported("video/webm;codecs=vp9")) {
-        mimeOption = "video/webm; codecs=vp9";
-    } else if (MediaRecorder.isTypeSupported("video/webm;codecs=vp8")) {
+    if (WebcamRecorder.isTypeSupported("video/webm;codecs=vp8")) {
         mimeOption = "video/webm; codecs=vp8";
-    } else if (MediaRecorder.isTypeSupported("video/webm")) {
+    } else if (WebcamRecorder.isTypeSupported("video/webm;codecs=vp9")) {
+        mimeOption = "video/webm; codecs=vp9";
+    } else if (WebcamRecorder.isTypeSupported("video/webm")) {
         mimeOption = "video/webm";
     } else {
         mimeOption = "video/mp4";
     }
 
     constraints = {
+        audioBitsPerSecond: 128000,
+        videoBitsPerSecond: 1500000,
         mimeType: mimeOption,
-        audio: true,
+        audio: {
+            echoCancellation: false
+        },
         video: {
             "mandatory": {
                 minWidth: 320,
@@ -260,27 +438,44 @@ function removeVideo() {
         }
     };
 
-    navigator.getUserMedia(constraints,
-    function(stream) {
+    var p = navigator.mediaDevices.getUserMedia(constraints);
+
+    p.then(function(stream) {
         localStream = stream;
-        blobUrl = createObjectURL(localStream);
-        $("#webcam").attr("src", blobUrl);
-        window.console.log(localStream);
-        recorder = new MediaRecorder(localStream, constraints);
+        var video = document.getElementById("webcam");
+        if (video.srcObject !== undefined) {
+            video.srcObject = localStream;
+            video.play();
+        } else {
+            if (window.URL && window.URL.createObjectURL) {
+                blobUrl = window.URL.createObjectURL(blobUrl);
+            } else {
+                blobUrl = window.webkitURL.createObjectURL(blobUrl);
+            }
+            $("#webcam").attr("src", blobUrl);
+        }
+
+        if (MediaSource !== null || MediaSource !== undefined) {
+            recorder = new MediaRecorder(localStream);
+        } else {
+            recorder = new MediaRecorder(localStream, constraints);
+        }
+
         $("#recstop").attr("src", $("#recurl").val());
         $("#recstop").on("click", function() {
-            startRecording();
+            startRecording(localStream);
         });
         $("#leftspan").css("display", "inline");
         $("#rightspan").css("display", "none");
-        $("#status").html("Camera preview.");
-        setPreviewPlayer(blobUrl);
-    },
-    function(err) {
-        var str = "<font color=\"red\">Your webcamera is not supported, ";
-        str = str + "or the webcamera is already used.</font>";
-        $("#message").html(str);
-        window.console.log(err.name + ": " + err.message);
+
+        $("#status").html("Camera perview...");
+
+        return 0;
+    })
+    .catch(function(err) {
+        printInitialErrorMessage("Sorry!!<br>This uploader does not support your camera.<br>Or, other program uses your camera.");
+        window.console.log(err);
+        return;
     });
 
     checkForm();

@@ -1,6 +1,6 @@
 /**
  * Webcam recording and uploading script.
- * @copyright  2017-2019 Yamaguchi University <info-cc@ml.cc.yamaguchi-u.ac.jp>
+ * @copyright  2017-2019 Tomoya Saito <t-saito@yamaguchi-u.ac.jp>
  * @license    http://www.gnu.org/licenses/agpl.html GNU AGPL v3 or later
  */
 

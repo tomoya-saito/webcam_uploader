@@ -413,9 +413,9 @@ function removeVideo() {
     } else if (WebcamRecorder.isTypeSupported("video/mp4")) {
         mimeOption = "video/mp4";
     } else if (WebcamRecorder.isTypeSupported("video/webm;codecs=vp8,opus")) {
-        mimeOption = "video/webm; codecs=vp8, ";
+        mimeOption = "video/webm; codecs=vp8,opus";
     } else if (WebcamRecorder.isTypeSupported("video/webm;codecs=vp9,opus")) {
-        mimeOption = "video/webm; codecs=vp9, ";
+        mimeOption = "video/webm; codecs=vp9,opus";
     } else if (WebcamRecorder.isTypeSupported("video/webm;codecs=vp8")) {
         mimeOption = "video/webm; codecs=vp8";
     } else {

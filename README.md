@@ -51,6 +51,9 @@ Warning
 
 Release notes
 ------
-* Version 1.0.0 (Dec. 14th, 2017). Release first version.
+
+* Version 1.2.1 (Dec. 11th, 2019). Fix a video codec selection scheme (in webcam_uploader.js).
+* Version 1.2.0 (Nov. 11th, 2019). Support recent version of the Firefox, and support the Safari 12.x/13.x on macOS.
 * Version 1.1.0 (Feb. 27th, 2018). Replace deprecated Kaltura APIs with new APIs.
-* Version 1.2.0 (Nob. 11th, 2019). Support recent version of the Firefox, and support the Safari 12.x/13.x on macOS.
+* Version 1.0.0 (Dec. 14th, 2017). Release first version.
+
